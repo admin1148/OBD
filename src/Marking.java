@@ -1,4 +1,7 @@
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Marking {
@@ -8,50 +11,67 @@ public class Marking {
 	private int ido;
 	private String type;
 
-	public void dispaly() {
+	public void dispaly(DataBase db) {
 
-		DataBase db = new DataBase();
-
-		int teacherCount = db.count("NAUCZYCIEL");
-		int studentCount = db.count("UCZEN");
-		int courseCount = db.count("PRZEDMIOT");
-		int markCount = db.count("OCENA");
+		ArrayList<Integer> teacherCount = db.count("NAUCZYCIEL", "IDN");
+		ArrayList<Integer> studentCount = db.count("UCZEN", "IDU");
+		ArrayList<Integer> courseCount = db.count("PRZEDMIOT", "IDP");
+		ArrayList<Integer> markCount = db.count("OCENA", "IDO");
 
 		do {
 			System.out.println("ID nauczyciela: ");
 			idn = getNumber();
-		} while (idn > teacherCount || idn <= 0);
+			if (!teacherCount.contains(idn)) {
+				System.out.println("Nieporpawne ID nauczyciela");
+			}
+		} while (!teacherCount.contains(idn));
 		do {
 			System.out.println("ID ucznia: ");
 			idu = getNumber();
-		} while (idu > studentCount || idu <= 0);
+			if (!studentCount.contains(idu)) {
+				System.out.println("Nieporpawne ID ucznia");
+			}
+		} while (!studentCount.contains(idu));
 		do {
 			System.out.println("ID przedmiotu: ");
 			idp = getNumber();
-		} while (idp > courseCount || idp <= 0);
+			if (!courseCount.contains(idp)) {
+				System.out.println("Nieporpawne ID przedmiotu");
+			}
+		} while (!courseCount.contains(idp));
 		do {
 			System.out.println("ID oceny: ");
 			ido = getNumber();
-		} while (ido > markCount || ido <= 0);
+			if (!markCount.contains(idp)) {
+				System.out.println("Nieporpawne ID oceny");
+			}
+		} while (!markCount.contains(ido));
 
-		System.out.println("typ oceny (C/S): ");
-		Scanner sS = new Scanner(System.in);
-		type = sS.next();
-		if (type.matches("c|C|s|S")) {
-			db.insert(idn, idu, idp, ido, type);
-		} else {
-			System.out.println("Nie wprowadzono rodzaju oceny");
-		}
+		do {
+			System.out.println("typ oceny (C/S): ");
+			Scanner sS = new Scanner(System.in);
+			type = sS.next();
+			if (type.matches("C|S")) {
+				db.insert(idn, idu, idp, ido, type);
+				System.out.println("Wprowadzono ocenê.");
+			} else {
+				System.out.println("Niepoprawa nazwa oceny");
+			}
+		} while (!type.matches("C|S"));
 
 	}
 
 	private int getNumber() {
-		int number = 0;
+		int nb;
+		int number=0;
 		Scanner sd = new Scanner(System.in);
 		try {
-			number = sd.nextInt();
+			if (sd.hasNext()) {
+			nb = sd.nextInt();
+			number = nb;}
 		} catch (InputMismatchException e) {
 			System.out.println("Nie wprowadzono liczby");
+		} catch (NoSuchElementException e) {
 		}
 		return number;
 	}
