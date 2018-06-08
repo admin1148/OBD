@@ -1,4 +1,5 @@
 import java.net.SocketTimeoutException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
@@ -13,39 +14,34 @@ public class Marking {
 
 	public void dispaly(DataBase db) {
 
-		ArrayList<Integer> teacherCount = db.count("NAUCZYCIEL", "IDN");
-		ArrayList<Integer> studentCount = db.count("UCZEN", "IDU");
-		ArrayList<Integer> courseCount = db.count("PRZEDMIOT", "IDP");
-		ArrayList<Integer> markCount = db.count("OCENA", "IDO");
-
 		do {
 			System.out.println("ID nauczyciela: ");
 			idn = getNumber();
-			if (!teacherCount.contains(idn)) {
+			if (idn <= 0 || !(idn == db.searchForID("NAUCZYCIEL", "IDN", idn))) {
 				System.out.println("Nieporpawne ID nauczyciela");
 			}
-		} while (!teacherCount.contains(idn));
+		} while (idn <= 0 || !(idn == db.searchForID("NAUCZYCIEL", "IDN", idn)));
 		do {
 			System.out.println("ID ucznia: ");
 			idu = getNumber();
-			if (!studentCount.contains(idu)) {
+			if (idu <= 0 || !(idu == db.searchForID("UCZEN", "IDU", idu))) {
 				System.out.println("Nieporpawne ID ucznia");
 			}
-		} while (!studentCount.contains(idu));
+		} while (idu <= 0 || !(idu == db.searchForID("UCZEN", "IDU", idu)));
 		do {
 			System.out.println("ID przedmiotu: ");
 			idp = getNumber();
-			if (!courseCount.contains(idp)) {
+			if (idp <= 0 || !(idp == db.searchForID("PRZEDMIOT", "IDP", idp))) {
 				System.out.println("Nieporpawne ID przedmiotu");
 			}
-		} while (!courseCount.contains(idp));
+		} while (idp <= 0 || !(idp == db.searchForID("PRZEDMIOT", "IDP", idp)));
 		do {
 			System.out.println("ID oceny: ");
 			ido = getNumber();
-			if (!markCount.contains(idp)) {
+			if (ido <= 0 || !(ido == db.searchForID("OCENA", "IDO", ido))) {
 				System.out.println("Nieporpawne ID oceny");
 			}
-		} while (!markCount.contains(ido));
+		} while (ido <= 0 || !(ido == db.searchForID("OCENA", "IDO", ido)));
 
 		do {
 			System.out.println("typ oceny (C/S): ");
@@ -63,12 +59,13 @@ public class Marking {
 
 	private int getNumber() {
 		int nb;
-		int number=0;
+		int number = 0;
 		Scanner sd = new Scanner(System.in);
 		try {
 			if (sd.hasNext()) {
-			nb = sd.nextInt();
-			number = nb;}
+				nb = sd.nextInt();
+				number = nb;
+			}
 		} catch (InputMismatchException e) {
 			System.out.println("Nie wprowadzono liczby");
 		} catch (NoSuchElementException e) {

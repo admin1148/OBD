@@ -75,7 +75,9 @@ class DataBase {
 					statement.execute("INSERT INTO UCZEN VALUES (7, 'Sadowski', 'Pawe³')");
 					statement.execute("INSERT INTO UCZEN VALUES (8, 'Ostrowski', 'Waldemar')");
 					statement.execute("INSERT INTO UCZEN VALUES (9, 'Stêpieñ', 'Paulina')");
+
 				}
+
 				check.close();
 
 				statement.execute("SELECT 1 FROM user_tables WHERE TABLE_NAME='PRZEDMIOT'");
@@ -234,4 +236,20 @@ class DataBase {
 		}
 	}
 
+	public int searchForID(String table, String column, int idValue) {
+		int id=-1;
+		try {
+			if (conn != null) {
+				Statement statement = conn.createStatement();
+				ResultSet resultSet = statement.executeQuery("SELECT * FROM " + table + " WHERE " + column + " = '" + idValue + "'");
+				while (resultSet.next()) {
+						id = resultSet.getInt(1);
+					}
+			}
+		} catch (SQLException e) {
+			System.out.println("B³¹d po³¹czenia. Program zostanie zamkniêty...");
+			System.exit(0);
+		}
+		return id;
+	}
 }
